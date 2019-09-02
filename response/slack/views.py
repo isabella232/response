@@ -39,11 +39,11 @@ n
         submit_label="Report",
         elements=[
             Text(label="Report", name="report", placeholder="What's the tl;dr?", value=report),
-            TextArea(label="Summary", name="summary", optional=True, placeholder="Can you share any more details?"),
-            TextArea(label="Impact", name="impact", optional=True, placeholder="Who or what might be affected?", hint="Think about affected people, systems, and processes"),
-            SelectFromUsers(label="Lead", name="lead", optional=True),
-            SelectWithOptions([(u['summary'], u['id']) for u in settings.PDSESSION.iter_all('services')], label="PagerDuty Schedule", name="pdschedule", optional=True, placeholder="This action will trigger an alert"),
-            SelectWithOptions([(s.capitalize(), i) for i, s in Incident.SEVERITIES], label="Severity", name="severity", optional=True)
+            TextArea(label="Summary", name="summary", placeholder="Can you share any more details?"),
+            TextArea(label="Impact", name="impact", placeholder="Who or what might be affected?", hint="Think about affected people, systems, and processes"),
+            SelectFromUsers(label="Lead", name="lead"),
+            SelectWithOptions([(s.capitalize(), i) for i, s in Incident.SEVERITIES], label="Severity", name="severity"),
+            SelectWithOptions([(u['summary'], u['id']) for u in settings.PDSESSION.iter_all('services')], label="PagerDuty Schedule (this will send a page)", name="pdschedule", optional=True, placeholder="This action will trigger a page")
         ]
     )
 

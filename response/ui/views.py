@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from response.core.models import Incident
 from response.slack.models import PinnedMessage, UserStats
 
-@login_required(login_url='/login/github-org')
+@login_required()
 def incident_doc(request: HttpRequest, incident_id: str):
 
     try:

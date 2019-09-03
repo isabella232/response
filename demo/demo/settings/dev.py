@@ -2,6 +2,7 @@ from .base import *
 
 SITE_URL = "http://localhost:8000"
 
+
 if os.environ.get("POSTGRES"):
     DATABASES = {
         'default': {
@@ -49,3 +50,4 @@ SLACK_API_MOCK = os.getenv("SLACK_API_MOCK", None)
 
 INCIDENT_BOT_ID = os.getenv("INCIDENT_BOT_ID") or SLACK_CLIENT.get_user_id(INCIDENT_BOT_NAME)
 INCIDENT_CHANNEL_ID = os.getenv("INCIDENT_CHANNEL_ID") or SLACK_CLIENT.get_channel_id(INCIDENT_CHANNEL_NAME)
+

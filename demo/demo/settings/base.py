@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'after_response',
     'rest_framework',
     'bootstrap4',
+    'social_django',
     'response.apps.ResponseConfig',
 ]
 
@@ -75,6 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -91,6 +94,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
+
+AUTHENTICATION_BACKENDS = {
+    # 'django.contrib.auth.backends.ModelBackend', # To keep the Browsable API
+    'social_core.backends.github.GithubOrganizationOAuth2',
 }
 
 
@@ -194,3 +202,4 @@ SLACK_CLIENT = SlackClient(SLACK_TOKEN)
 PAGER_DUTY_TOKEN = get_env_var("PAGER_DUTY_TOKEN")
 PAGER_DUTY_BASE_URL = get_env_var("PAGER_DUTY_BASE_URL")
 PDSESSION = APISession(PAGER_DUTY_TOKEN)
+

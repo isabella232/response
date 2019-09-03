@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, Http404
+from django.contrib.auth.decorators import login_required
 
 from response.core.models import Incident
 from response.slack.models import PinnedMessage, UserStats
 
-
+@login_required(login_url='/login/github-org')
 def incident_doc(request: HttpRequest, incident_id: str):
 
     try:

@@ -33,4 +33,4 @@ echo "[INFO] Creating Admin User"
 create_admin_user
 
 echo "[INFO] Starting Response Dev Server"
-python3 manage.py runserver 0.0.0.0:8000
+python3 manage.py runserver --insecure 0.0.0.0:8000

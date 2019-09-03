@@ -2,7 +2,7 @@ from .base import *
 
 SITE_URL = os.environ.get("SITE_URL")
 
-DEBUG = True
+DEBUG = False
 
 if os.environ.get("POSTGRES"):
     DATABASES = {

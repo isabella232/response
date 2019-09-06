@@ -57,7 +57,9 @@ STATIC_ROOT = "static"
 REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 #
 
@@ -73,6 +75,8 @@ MARKDOWN_FILTER_WHITELIST_STYLES = [
     "vertical-align", "text-align", "border-style", "border-width", "float",
     "margin", "margin-bottom", "margin-left", "margin-right", "margin-top",
 ]
+
+RESPONSE_LOGIN_REQUIRED = True
 ```
 
 In `urls.py`, add the following to `urlpatterns` (you may also need to import `include`):
@@ -120,6 +124,15 @@ Response needs an OAuth access token to use the Slack API.
 - Copy the token that starts `xoxp-...` from the OAuth & Permissions section of your Slack App and use it to set the `SLACK_TOKEN` variable.
 
 **Note:** Since some of the APIs commands we use require a _user_ token, we only need the token starting with `xoxp-...`.  If/when Slack allow these actions to be controlled by Bots, we can use the _bot_ token, starting `xoxb-...`.
+
+### Slack Client (`SLACK_CLIENT`)
+
+Response needs a shared global instance of a Slack Client to talk to the Slack API. Typically this does not require any additional configuration.
+
+```python
+from response.slack.client import SlackClient
+SLACK_CLIENT = SlackClient(SLACK_TOKEN)
+```
 
 ### Signing Secret (`SLACK_SIGNING_SECRET`)
 

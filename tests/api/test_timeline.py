@@ -1,14 +1,13 @@
 import json
 
+import pytest
 from django.urls import reverse
 from faker import Faker
-import pytest
 from rest_framework.test import force_authenticate
 
 from response import serializers
-from response.models import TimelineEvent
 from response.core.views import IncidentTimelineEventViewSet
-
+from response.models import TimelineEvent
 from tests.factories import IncidentFactory, TimelineEventFactory
 
 faker = Faker()
@@ -32,12 +31,12 @@ def test_create_timeline_event(arf, api_user):
 
     assert response.status_code == 201, "Got non-201 response from API"
 
-    new_action = TimelineEvent.objects.get(
+    assert TimelineEvent.objects.filter(
         incident=incident, timestamp=event_model.timestamp
-    )
+    ).exists()
 
 
-def test_list_actions_by_incident(arf, api_user):
+def test_list_timeline_events_by_incident(arf, api_user):
     incident = IncidentFactory.create()
 
     req = arf.get(
@@ -58,6 +57,9 @@ def test_list_actions_by_incident(arf, api_user):
         assert event["text"]
         assert event["event_type"]
         assert event["id"]
+        if event["event_type"] != "text":
+            assert event["metadata"]
+            assert type(event["metadata"]) == dict
 
 
 @pytest.mark.parametrize(

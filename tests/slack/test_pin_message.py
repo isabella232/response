@@ -1,9 +1,11 @@
 import datetime
+
 import pytest
 from faker import Faker
-from response.slack.event_handlers import handle_pin_added, handle_pin_removed
-from response.slack.models import PinnedMessage, TimelineEvent
 
+from response.core.models import TimelineEvent
+from response.slack.event_handlers import handle_pin_added, handle_pin_removed
+from response.slack.models import PinnedMessage
 from tests.factories import ExternalUserFactory, IncidentFactory
 
 faker = Faker()
@@ -36,5 +38,5 @@ def test_add_and_remove_pin(mock_slack):
     with pytest.raises(PinnedMessage.DoesNotExist):
         PinnedMessage.objects.get(incident=incident, message_ts=123)
         TimelineEvent.objects.get(
-            incident=incident, timestamp=datetime.fromtimestamp(float(message_ts))
+            incident=incident, timestamp=datetime.fromtimestamp(123)
         )

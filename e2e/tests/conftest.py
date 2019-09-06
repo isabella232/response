@@ -1,13 +1,11 @@
-from datetime import datetime
-import os
-import pytest
-import requests
 import hashlib
 import hmac
-import json
+import os
+from datetime import datetime
+from urllib.parse import urljoin
 
+import pytest
 from requests import Request, Session
-from urllib.parse import urljoin, urlencode
 
 
 class ResponseSession(Session):
@@ -52,7 +50,7 @@ def wait_for_server(client):
             r = client.get("core/")
             r.raise_for_status()
             return
-        except:
+        except Exception:
             time_elapsed = datetime.now() - start_time
             if time_elapsed.total_seconds() >= 60:
                 print(f"time elapsed: {time_elapsed.total_seconds()}s")

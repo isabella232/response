@@ -1,36 +1,40 @@
+import logging
 from datetime import datetime
-import json
+from typing import Any
 
 from django.conf import settings
 
-from response.slack.settings import INCIDENT_EDIT_DIALOG, INCIDENT_REPORT_DIALOG
-from response.core.models.incident import Incident
-from response.slack.models import HeadlinePost, CommsChannel, ExternalUser, GetOrCreateSlackExternalUser
-from response.slack.decorators import dialog_handler
+from pdpyras import PDClientError
+from response.core.models import ExternalUser, Incident
 from response.slack.client import channel_reference
-from pdpyras import  PDClientError
+from response.slack.decorators import dialog_handler
+from response.slack.settings import INCIDENT_EDIT_DIALOG, INCIDENT_REPORT_DIALOG
 
-
-import logging
 logger = logging.getLogger(__name__)
 
 
 @dialog_handler(INCIDENT_REPORT_DIALOG)
-def report_incident(user_id: str, channel_id: str, submission: json, response_url: str, state: json):
-    report = submission['report']
-    summary = submission['summary']
-    impact = submission['impact']
-    lead_id = submission['lead']
-    severity = submission['severity']
-    pdschedule = submission['pdschedule']
+def report_incident(
+    user_id: str, channel_id: str, submission: Any, response_url: str, state: Any
+):
+    report = submission["report"]
+    summary = submission["summary"]
+    impact = submission["impact"]
+    lead_id = submission["lead"]
+    severity = submission["severity"]
+    pdschedule = submission["pdschedule"]
 
-    name = settings.SLACK_CLIENT.get_user_profile(user_id)['name']
-    reporter = GetOrCreateSlackExternalUser(external_id=user_id, display_name=name)
+    name = settings.SLACK_CLIENT.get_user_profile(user_id)["name"]
+    reporter, _ = ExternalUser.objects.get_or_create_slack(
+        external_id=user_id, display_name=name
+    )
 
     lead = None
     if lead_id:
-        lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)['name']
-        lead = GetOrCreateSlackExternalUser(external_id=lead_id, display_name=lead_name)
+        lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
+        lead, _ = ExternalUser.objects.get_or_create_slack(
+            external_id=lead_id, display_name=lead_name
+        )
 
     Incident.objects.create_incident(
         report=report,
@@ -45,24 +49,24 @@ def report_incident(user_id: str, channel_id: str, submission: json, response_ur
 
     try:
         if pdschedule:
-            res = settings.PDSESSION.rpost('/incidents',json={
-                'incident':{
-                    'type': 'incident',
-                    'title': report,
-                    'service': {
-                        'id': pdschedule,
-                        'type': 'service_reference',
-                    },
-                    'body': {
-                        'type': 'incident_body',
-                        'details': summary if summary else "",
-                    },
-                }
-            }, headers={'From': 'marcos@zeit.co'})
+            res = settings.PDSESSION.rpost(
+                "/incidents",
+                json={
+                    "incident": {
+                        "type": "incident",
+                        "title": report,
+                        "service": {"id": pdschedule, "type": "service_reference"},
+                        "body": {
+                            "type": "incident_body",
+                            "details": summary if summary else "",
+                        },
+                    }
+                },
+                headers={"From": "marcos@zeit.co"},
+            )
 
     except PDClientError as pce:
         logger.error(pce.response.json())
-
 
     incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
     text = f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} to complete the report and/or help deal with the issue"
@@ -70,18 +74,22 @@ def report_incident(user_id: str, channel_id: str, submission: json, response_ur
 
 
 @dialog_handler(INCIDENT_EDIT_DIALOG)
-def edit_incident(user_id: str, channel_id: str, submission: json, response_url: str, state: json):
-    report = submission['report']
-    summary = submission['summary']
-    impact = submission['impact']
-    lead_id = submission['lead']
-    severity = submission['severity']
-    pdschedule = submission['pdschedule']
+def edit_incident(
+    user_id: str, channel_id: str, submission: Any, response_url: str, state: Any
+):
+    report = submission["report"]
+    summary = submission["summary"]
+    impact = submission["impact"]
+    lead_id = submission["lead"]
+    severity = submission["severity"]
+    pdschedule = submission["pdschedule"]
 
     lead = None
     if lead_id:
-        lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)['name']
-        lead = GetOrCreateSlackExternalUser(external_id=lead_id, display_name=lead_name)
+        lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
+        lead, _ = ExternalUser.objects.get_or_create_slack(
+            external_id=lead_id, display_name=lead_name
+        )
 
     try:
         incident = Incident.objects.get(pk=state)
@@ -98,25 +106,24 @@ def edit_incident(user_id: str, channel_id: str, submission: json, response_url:
         incident.pdschedule = pdschedule
         incident.save()
 
-
         if prev_schedule != pdschedule:
-            res = settings.PDSESSION.rpost('/incidents',json={
-                'incident':{
-                    'type': 'incident',
-                    'title': incident.report,
-                    'service': {
-                        'id': incident.pdschedule,
-                        'type': 'service_reference',
-                    },
-                    'body': {
-                        'type': 'incident_body',
-                        'details': incident.summary if incident.summary else "",
-                    },
-                }
-            })
+            res = settings.PDSESSION.rpost(
+                "/incidents",
+                json={
+                    "incident": {
+                        "type": "incident",
+                        "title": incident.report,
+                        "service": {
+                            "id": incident.pdschedule,
+                            "type": "service_reference",
+                        },
+                        "body": {
+                            "type": "incident_body",
+                            "details": incident.summary if incident.summary else "",
+                        },
+                    }
+                },
+            )
 
     except Incident.DoesNotExist:
         logger.error(f"No incident found for pk {state}")
-
-    except PDClientError as pce:
-        logger.error(pce.response.json())

@@ -1,13 +1,13 @@
 import json
+
 import pytest
 from django.urls import reverse
 from faker import Faker
 from rest_framework.test import force_authenticate
 
 from response import serializers
-from response.models import Action
 from response.core.views import IncidentActionViewSet
-
+from response.models import Action
 from tests.factories import ActionFactory, ExternalUserFactory, IncidentFactory
 
 faker = Faker()
@@ -51,8 +51,7 @@ def test_create_action(arf, api_user):
     )
 
     assert response.status_code == 201, "Got non-201 response from API"
-
-    new_action = Action.objects.get(details=action_model.details)
+    assert Action.objects.filter(details=action_model.details).exists()
 
 
 def test_update_action_user(arf, api_user):

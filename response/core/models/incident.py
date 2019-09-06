@@ -20,7 +20,7 @@ class IncidentManager(models.Manager):
     ):
         incident = self.create(
             report=report,
-            reporter=reRporter,
+            reporter=reporter,
             report_time=report_time,
             start_time=report_time,
             summary=summary,

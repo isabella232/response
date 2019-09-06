@@ -1,6 +1,8 @@
 import json
 import logging
 
+from django.conf import settings
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 

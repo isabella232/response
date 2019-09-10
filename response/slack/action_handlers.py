@@ -75,10 +75,10 @@ def handle_edit_incident_button(ac: ActionContext):
                 hint="Think about affected people, systems, and processes",
             ),
             # SelectFromUsers(
-                # label="Lead",
-                # name="lead",
-                # value=ac.incident.lead.external_id if ac.incident.lead else None,
-                # optional=False,
+            # label="Lead",
+            # name="lead",
+            # value=ac.incident.lead.external_id if ac.incident.lead else None,
+            # optional=False,
             # ),
             SelectWithOptions(
                 [(s.capitalize(), i) for i, s in Incident.SEVERITIES],

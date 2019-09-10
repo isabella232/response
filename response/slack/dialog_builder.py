@@ -52,6 +52,7 @@ class Element:
     def serialize(self):
         return {k: v for k, v in vars(self).items() if v}
 
+
 class Text(Element):
     def __init__(
         self,

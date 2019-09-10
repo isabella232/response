@@ -61,20 +61,17 @@ class HeadlinePost(models.Model):
             )
         )
         # incident_lead_text = (
-            # user_reference(self.incident.lead.external_id)
-            # if self.incident.lead
-            # else "-"
+        # user_reference(self.incident.lead.external_id)
+        # if self.incident.lead
+        # else "-"
         # )
         # msg.add_block(
-            # Section(
-                # block_id="lead", text=Text(f"👩‍🚒 Incident Lead: {incident_lead_text}")
-            # )
+        # Section(
+        # block_id="lead", text=Text(f"👩‍🚒 Incident Lead: {incident_lead_text}")
+        # )
         # )
 
-        pd_url = urljoin(
-            settings.PAGER_DUTY_BASE_URL,
-            "services/P703RRY",
-        )
+        pd_url = urljoin(settings.PAGER_DUTY_BASE_URL, "services/P703RRY")
         msg.add_block(
             Section(
                 block_id="pager",

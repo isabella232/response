@@ -31,10 +31,10 @@ def report_incident(
 
     lead = None
     # if lead_id:
-        # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
-        # lead, _ = ExternalUser.objects.get_or_create_slack(
-            # external_id=lead_id, display_name=lead_name
-        # )
+    # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
+    # lead, _ = ExternalUser.objects.get_or_create_slack(
+    # external_id=lead_id, display_name=lead_name
+    # )
 
     Incident.objects.create_incident(
         report=report,
@@ -47,7 +47,7 @@ def report_incident(
     )
 
     try:
-        if pdschedule == 'yes':
+        if pdschedule == "yes":
             res = settings.PDSESSION.rpost(
                 "/incidents",
                 json={
@@ -84,14 +84,13 @@ def edit_incident(
 
     lead = None
     # if lead_id:
-        # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
-        # lead, _ = ExternalUser.objects.get_or_create_slack(
-            # external_id=lead_id, display_name=lead_name
-        # )
+    # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
+    # lead, _ = ExternalUser.objects.get_or_create_slack(
+    # external_id=lead_id, display_name=lead_name
+    # )
 
     try:
         incident = Incident.objects.get(pk=state)
-
 
         # deliberately update in this way the post_save signal gets sent
         # (required for the headline post to auto update)
@@ -101,7 +100,6 @@ def edit_incident(
         incident.lead = lead
         incident.severity = severity
         incident.save()
-
 
     except Incident.DoesNotExist:
         logger.error(f"No incident found for pk {state}")

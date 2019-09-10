@@ -54,13 +54,13 @@ def slash_command(request):
             TextArea(
                 label="Summary",
                 name="summary",
-                optional=True,
+                optional=False,
                 placeholder="Can you share any more details?",
             ),
             TextArea(
                 label="Impact",
                 name="impact",
-                optional=True,
+                optional=False,
                 placeholder="Who or what might be affected?",
                 hint="Think about affected people, systems, and processes",
             ),
@@ -69,7 +69,7 @@ def slash_command(request):
                 [(s.capitalize(), i) for i, s in Incident.SEVERITIES],
                 label="Severity",
                 name="severity",
-                optional=True,
+                optional=False,
             ),
             SelectWithOptions(
                 [("Yes", "yes"), ("No", "no")],

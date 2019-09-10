@@ -14,5 +14,8 @@ dist/
 build/
 
 *.egg-info/
+.idea
+.pytest_cache
+.python-version
 
 .mypy_cache/

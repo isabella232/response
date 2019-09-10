@@ -60,26 +60,26 @@ class HeadlinePost(models.Model):
                 ),
             )
         )
-        incident_lead_text = (
-            user_reference(self.incident.lead.external_id)
-            if self.incident.lead
-            else "-"
-        )
-        msg.add_block(
-            Section(
-                block_id="lead", text=Text(f"👩‍🚒 Incident Lead: {incident_lead_text}")
-            )
-        )
+        # incident_lead_text = (
+            # user_reference(self.incident.lead.external_id)
+            # if self.incident.lead
+            # else "-"
+        # )
+        # msg.add_block(
+            # Section(
+                # block_id="lead", text=Text(f"👩‍🚒 Incident Lead: {incident_lead_text}")
+            # )
+        # )
 
         pd_url = urljoin(
             settings.PAGER_DUTY_BASE_URL,
-            "services/" + self.incident.pdschedule if self.incident.pdschedule else "",
+            "services/P703RRY",
         )
         msg.add_block(
             Section(
                 block_id="pager",
                 text=Text(
-                    f"{self.incident.pd_emoji()} Pagerduty schedule: <{pd_url}|{self.incident.pdschedule}>"
+                    f"{self.incident.pd_emoji()} Pagerduty service: <{pd_url}|INCIDENT>"
                 ),
             )
         )

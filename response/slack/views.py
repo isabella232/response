@@ -65,7 +65,7 @@ def slash_command(request):
                 placeholder="Who or what might be affected?",
                 hint="Think about affected people, systems, and processes",
             ),
-            SelectFromUsers(label="Lead", name="lead", optional=True),
+            # SelectFromUsers(label="Lead", name="lead", optional=True),
             SelectWithOptions(
                 [(s.capitalize(), i) for i, s in Incident.SEVERITIES],
                 label="Severity",
@@ -74,13 +74,13 @@ def slash_command(request):
             ),
             SelectWithOptions(
                 [
-                    (u["summary"], u["id"])
-                    for u in settings.PDSESSION.iter_all("services")
+                    ('Yes', 'yes'),
+                    ('No', 'no')
                 ],
-                label="PagerDuty Schedule (this will send a page)",
+                label="Send page to pagerduty schedule?",
                 name="pdschedule",
                 optional=True,
-                placeholder="This action will trigger a page",
+                placeholder="Select whether to page on-call schedule",
             ),
         ],
     )

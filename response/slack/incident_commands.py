@@ -32,16 +32,16 @@ def update_impact(incident: Incident, user_id: str, message: str):
     return True, None
 
 
-@__default_incident_command(["lead"], helptext="Assign someone as the incident lead")
-def set_incident_lead(incident: Incident, user_id: str, message: str):
-    assignee = reference_to_id(message) or user_id
-    name = settings.SLACK_CLIENT.get_user_profile(assignee)["name"]
-    user, _ = ExternalUser.objects.get_or_create_slack(
-        external_id=assignee, display_name=name
-    )
-    incident.lead = user
-    incident.save()
-    return True, None
+# @__default_incident_command(["lead"], helptext="Assign someone as the incident lead")
+# def set_incident_lead(incident: Incident, user_id: str, message: str):
+    # assignee = reference_to_id(message) or user_id
+    # name = settings.SLACK_CLIENT.get_user_profile(assignee)["name"]
+    # user, _ = ExternalUser.objects.get_or_create_slack(
+        # external_id=assignee, display_name=name
+    # )
+    # incident.lead = user
+    # incident.save()
+    # return True, None
 
 
 @__default_incident_command(["severity", "sev"], helptext="Set the incident severity")

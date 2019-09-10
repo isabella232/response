@@ -17,16 +17,16 @@ def remind_severity(incident: Incident):
         pass
 
 
-@recurring_notification(interval_mins=2, max_notifications=5)
-def remind_incident_lead(incident: Incident):
-    try:
-        comms_channel = CommsChannel.objects.get(incident=incident)
-        if not incident.lead:
-            comms_channel.post_in_channel(
-                "👩‍🚒 This incident hasn't got a lead. Please set one with `@incident lead ...`"
-            )
-    except CommsChannel.DoesNotExist:
-        pass
+# @recurring_notification(interval_mins=2, max_notifications=5)
+# def remind_incident_lead(incident: Incident):
+    # try:
+        # comms_channel = CommsChannel.objects.get(incident=incident)
+        # if not incident.lead:
+            # comms_channel.post_in_channel(
+                # "👩‍🚒 This incident hasn't got a lead. Please set one with `@incident lead ...`"
+            # )
+    # except CommsChannel.DoesNotExist:
+        # pass
 
 
 @recurring_notification(interval_mins=1440, max_notifications=5)

@@ -16,7 +16,6 @@ class IncidentManager(models.Manager):
         impact=None,
         lead=None,
         severity=None,
-        pdschedule=None,
     ):
         incident = self.create(
             report=report,
@@ -27,7 +26,6 @@ class IncidentManager(models.Manager):
             impact=impact,
             lead=lead,
             severity=severity,
-            pdschedule=pdschedule,
         )
         return incident
 
@@ -56,9 +54,6 @@ class Incident(models.Model):
     )
     impact = models.TextField(
         blank=True, null=True, help_text="What impact is this having?"
-    )
-    pdschedule = models.TextField(
-        blank=True, null=True, help_text="What's the PagerDuty schedule?"
     )
     lead = models.ForeignKey(
         ExternalUser,

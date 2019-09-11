@@ -71,12 +71,15 @@ class HeadlinePost(models.Model):
         # )
         # )
 
-        pd_url = urljoin(settings.PAGER_DUTY_BASE_URL, "services/P703RRY")
+        pd_url = urljoin(
+            settings.PAGER_DUTY_BASE_URL,
+            "incidents/" + self.incident.pdschedule if self.incident.pdschedule else "",
+        )
         msg.add_block(
             Section(
                 block_id="pager",
                 text=Text(
-                    f"{self.incident.pd_emoji()} Pagerduty service: <{pd_url}|INCIDENT>"
+                    f"{self.incident.pd_emoji()} Pagerduty schedule: <{pd_url}|{self.incident.pdschedule}>"
                 ),
             )
         )

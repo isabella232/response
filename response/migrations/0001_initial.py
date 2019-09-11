@@ -67,6 +67,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("report", models.CharField(max_length=200)),
+                ("pdschedule", models.CharField(max_length=20, blank=True, null=True)),
                 ("report_time", models.DateTimeField()),
                 ("start_time", models.DateTimeField()),
                 ("end_time", models.DateTimeField(blank=True, null=True)),

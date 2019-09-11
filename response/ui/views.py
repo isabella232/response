@@ -1,5 +1,6 @@
 from django.http import Http404, HttpRequest
 from django.shortcuts import render
+from django.conf import settings
 
 from response.core.models import Incident
 from response.decorators import response_login_required
@@ -18,9 +19,10 @@ def incident_doc(request: HttpRequest, incident_id: str):
     user_stats = UserStats.objects.filter(incident=incident).order_by("-message_count")[
         :5
     ]
+    view_settings = {"PAGER_DUTY_BASE_URL": settings.PAGER_DUTY_BASE_URL}
 
     return render(
         request,
         template_name="incident_doc.html",
-        context={"incident": incident, "events": events, "user_stats": user_stats},
+        context={"incident": incident, "events": events, "user_stats": user_stats, "settings": view_settings},
     )

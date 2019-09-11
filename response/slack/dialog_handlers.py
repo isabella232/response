@@ -36,19 +36,10 @@ def report_incident(
     # external_id=lead_id, display_name=lead_name
     # )
 
-    Incident.objects.create_incident(
-        report=report,
-        reporter=reporter,
-        report_time=datetime.now(),
-        summary=summary,
-        impact=impact,
-        lead=lead,
-        severity=severity,
-    )
-
     try:
+        pdincident = None
         if pdschedule == "yes":
-            res = settings.PDSESSION.rpost(
+            incident = settings.PDSESSION.rpost(
                 "/incidents",
                 json={
                     "incident": {
@@ -63,13 +54,29 @@ def report_incident(
                 },
                 headers={"From": "marcos@zeit.co"},
             )
+            pdincident = incident['id']
+
+        Incident.objects.create_incident(
+            report=report,
+            reporter=reporter,
+            report_time=datetime.now(),
+            summary=summary,
+            impact=impact,
+            lead=lead,
+            severity=severity,
+            pdschedule = pdincident
+        )
+
+
+        incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
+        text = f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} to complete the report and/or help deal with the issue"
+        settings.SLACK_CLIENT.send_ephemeral_message(channel_id, user_id, text)
 
     except PDClientError as pce:
         logger.error(pce.response.json())
+        # Raise here so incident doesn't get created
+        raise pce
 
-    incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
-    text = f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} to complete the report and/or help deal with the issue"
-    settings.SLACK_CLIENT.send_ephemeral_message(channel_id, user_id, text)
 
 
 @dialog_handler(INCIDENT_EDIT_DIALOG)

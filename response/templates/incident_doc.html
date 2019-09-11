@@ -30,6 +30,7 @@
 
             <li><span>Start Time:</span>{% if incident.start_time %}{{ incident.start_time }}{% endif %}</li>
             <li><span>Report Time:</span>{% if incident.report_time %}{{ incident.report_time }}{% endif %}</li>
+            {% if incident.pdschedule %}<li><span>PagerDuty incident:</span><a href="{{ settings.PAGER_DUTY_BASE_URL }}/incidents/{{ incident.pdschedule }}" target="_blank">{{ incident.pdschedule }}</a></li>{% endif %}
 
             {% if incident.is_closed %}
                 <li><span>End Time:</span>{{ incident.end_time }}</li>

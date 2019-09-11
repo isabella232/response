@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.http import Http404, HttpRequest
 from django.shortcuts import render
-from django.conf import settings
 
 from response.core.models import Incident
 from response.decorators import response_login_required
@@ -24,5 +24,10 @@ def incident_doc(request: HttpRequest, incident_id: str):
     return render(
         request,
         template_name="incident_doc.html",
-        context={"incident": incident, "events": events, "user_stats": user_stats, "settings": view_settings},
+        context={
+            "incident": incident,
+            "events": events,
+            "user_stats": user_stats,
+            "settings": view_settings,
+        },
     )

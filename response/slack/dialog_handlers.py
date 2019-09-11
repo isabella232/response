@@ -54,7 +54,7 @@ def report_incident(
                 },
                 headers={"From": "marcos@zeit.co"},
             )
-            pdincident = incident['id']
+            pdincident = incident["id"]
 
         Incident.objects.create_incident(
             report=report,
@@ -64,9 +64,8 @@ def report_incident(
             impact=impact,
             lead=lead,
             severity=severity,
-            pdschedule = pdincident
+            pdschedule=pdincident,
         )
-
 
         incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
         text = f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} to complete the report and/or help deal with the issue"
@@ -76,7 +75,6 @@ def report_incident(
         logger.error(pce.response.json())
         # Raise here so incident doesn't get created
         raise pce
-
 
 
 @dialog_handler(INCIDENT_EDIT_DIALOG)

@@ -36,7 +36,7 @@ def report_incident(
     )
 
     lead = None
-    #if lead_id:
+    # if lead_id:
     #    lead_name = get_user_profile(lead_id)["name"]
     #    lead, _ = ExternalUser.objects.get_or_create_slack(
     #        external_id=lead_id, display_name=lead_name
@@ -75,7 +75,9 @@ def report_incident(
         )
 
         if report_only and hasattr(settings, "INCIDENT_REPORT_CHANNEL_ID"):
-            incidents_channel_ref = channel_reference(settings.INCIDENT_REPORT_CHANNEL_ID)
+            incidents_channel_ref = channel_reference(
+                settings.INCIDENT_REPORT_CHANNEL_ID
+            )
         else:
             incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
 
@@ -102,7 +104,7 @@ def edit_incident(
     severity = submission["severity"]
 
     lead = None
-    #if lead_id:
+    # if lead_id:
     #    lead_name = get_user_profile(lead_id)["name"]
     #    lead, _ = ExternalUser.objects.get_or_create_slack(
     #        external_id=lead_id, display_name=lead_name

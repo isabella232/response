@@ -6,6 +6,7 @@ from django.conf import settings
 
 from pdpyras import PDClientError
 from response.core.models import ExternalUser, Incident
+from response.slack.cache import get_user_profile
 from response.slack.client import channel_reference
 from response.slack.decorators import dialog_handler
 from response.slack.settings import INCIDENT_EDIT_DIALOG, INCIDENT_REPORT_DIALOG
@@ -24,17 +25,22 @@ def report_incident(
     severity = submission["severity"]
     pdschedule = submission["pdschedule"]
 
-    name = settings.SLACK_CLIENT.get_user_profile(user_id)["name"]
+    if "incident_type" in submission:
+        report_only = submission["incident_type"] == "report"
+    else:
+        report_only = False
+
+    name = get_user_profile(user_id)["name"]
     reporter, _ = ExternalUser.objects.get_or_create_slack(
         external_id=user_id, display_name=name
     )
 
     lead = None
-    # if lead_id:
-    # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
-    # lead, _ = ExternalUser.objects.get_or_create_slack(
-    # external_id=lead_id, display_name=lead_name
-    # )
+    #if lead_id:
+    #    lead_name = get_user_profile(lead_id)["name"]
+    #    lead, _ = ExternalUser.objects.get_or_create_slack(
+    #        external_id=lead_id, display_name=lead_name
+    #    )
 
     try:
         pdincident = None
@@ -60,6 +66,7 @@ def report_incident(
             report=report,
             reporter=reporter,
             report_time=datetime.now(),
+            report_only=report_only,
             summary=summary,
             impact=impact,
             lead=lead,
@@ -67,8 +74,15 @@ def report_incident(
             pdschedule=pdincident,
         )
 
-        incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
-        text = f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} to complete the report and/or help deal with the issue"
+        if report_only and hasattr(settings, "INCIDENT_REPORT_CHANNEL_ID"):
+            incidents_channel_ref = channel_reference(settings.INCIDENT_REPORT_CHANNEL_ID)
+        else:
+            incidents_channel_ref = channel_reference(settings.INCIDENT_CHANNEL_ID)
+
+        text = (
+            f"Thanks for raising the incident 🙏\n\nHead over to {incidents_channel_ref} "
+            f"to complete the report and/or help deal with the issue"
+        )
         settings.SLACK_CLIENT.send_ephemeral_message(channel_id, user_id, text)
 
     except PDClientError as pce:
@@ -88,14 +102,17 @@ def edit_incident(
     severity = submission["severity"]
 
     lead = None
-    # if lead_id:
-    # lead_name = settings.SLACK_CLIENT.get_user_profile(lead_id)["name"]
-    # lead, _ = ExternalUser.objects.get_or_create_slack(
-    # external_id=lead_id, display_name=lead_name
-    # )
+    #if lead_id:
+    #    lead_name = get_user_profile(lead_id)["name"]
+    #    lead, _ = ExternalUser.objects.get_or_create_slack(
+    #        external_id=lead_id, display_name=lead_name
+    #    )
 
     try:
         incident = Incident.objects.get(pk=state)
+
+        if not severity and incident.severity:
+            raise Exception("Cannot unset severity")
 
         # deliberately update in this way the post_save signal gets sent
         # (required for the headline post to auto update)

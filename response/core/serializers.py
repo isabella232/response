@@ -7,11 +7,11 @@ from response.slack.models import CommsChannel
 class ExternalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalUser
-        fields = ("app_id", "external_id", "display_name", "full_name")
+        fields = ("app_id", "external_id", "display_name", "full_name", "email")
 
 
 class TimelineEventSerializer(serializers.ModelSerializer):
-    metadata = serializers.JSONField(allow_null=True)
+    metadata = serializers.JSONField(allow_null=True, required=False)
 
     class Meta:
         model = TimelineEvent
@@ -62,6 +62,13 @@ class IncidentSerializer(serializers.ModelSerializer):
     lead = ExternalUserSerializer()
     comms_channel = CommsChannelSerializer(read_only=True)
     action_items = ActionSerializer(read_only=True, many=True)
+
+    # This ensures we can't unset severity
+    # https://www.django-rest-framework.org/api-guide/fields/#required
+    # `required = False` means the field doesn't have to be included when the json request is
+    # deserialised (including creation), and so it remains unchanged (if None, it remains None).
+    # `allow_null` is set to False by default so we still demand a value is given _if_ it's sent in the json.
+    severity = serializers.CharField(required=False)
 
     class Meta:
         model = Incident

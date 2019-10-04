@@ -1,8 +1,8 @@
-![PyPI](https://img.shields.io/pypi/v/django-incident-response.svg)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-incident-response.svg)
-![PyPI - Django Version](https://img.shields.io/pypi/djversions/django-incident-response.svg)
-![Travis (.org)](https://img.shields.io/travis/monzo/response.svg)
-![GitHub](https://img.shields.io/github/license/monzo/response.svg)
+[![PyPI](https://img.shields.io/pypi/v/django-incident-response.svg)](https://pypi.org/project/django-incident-response/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-incident-response.svg)](https://docs.python.org/3/)
+[![PyPI - Django Version](https://img.shields.io/pypi/djversions/django-incident-response.svg)](https://docs.djangoproject.com/en/2.2/)
+[![Travis (.org)](https://img.shields.io/travis/monzo/response.svg)](https://travis-ci.org/monzo/response)
+[![GitHub](https://img.shields.io/github/license/monzo/response.svg)](https://choosealicense.com/licenses/mit/)
 
 # Response ⚡
 
@@ -108,6 +108,7 @@ urlpatterns = [
   - `chat:write:bot`
   - `chat:write:user`
   - `users:read`
+  - `users:read.email`
 
 - At the top of the page, the `Install App to Workspace` button is now available.  Click it!
 

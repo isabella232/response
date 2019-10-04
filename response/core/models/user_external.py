@@ -12,13 +12,14 @@ class ExternalUserManager(models.Manager):
 
 class ExternalUser(models.Model):
     class Meta:
-        unique_together = ("owner", "app_id")
+        unique_together = ("owner", "app_id", "external_id")
 
     owner = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     app_id = models.CharField(max_length=50, blank=False, null=False)
     external_id = models.CharField(max_length=50, blank=False, null=False)
     display_name = models.CharField(max_length=50, blank=False, null=False)
     full_name = models.CharField(max_length=50, blank=True, null=True)
+    email = models.CharField(max_length=100, blank=True, null=True)
 
     objects = ExternalUserManager()
 
